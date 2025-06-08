@@ -1,0 +1,16 @@
+name: Android Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: arm64
+          distro: ubuntu20.04
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y build-essential python3-pip
+            pip install buildozer
+            buildozer android debug
