@@ -2,16 +2,11 @@ name: Android Build
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -22,15 +17,15 @@ jobs:
               libtool \
               pkg-config \
               zlib1g-dev \
-              libncurses5-dev \
-              libncursesw5-dev \
-              libtinfo5 \
+              libncurses-dev \  # Replaces libtinfo5
               cmake \
               libffi-dev \
-              libssl-dev
+              libssl-dev \
+              ninja-build
           pip install buildozer cython==0.29.19
           
       - name: Build APK
         run: |
           buildozer init
+          sed -i "s/pkgname = .*/pkgname = twentyfive/" buildozer.spec
           buildozer -v android debug
